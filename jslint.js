@@ -1199,7 +1199,7 @@ var JSLINT = (function () {
             at = source_row.search(/ \t/);
             if (at >= 0) {
                 warn_at('mixed', line, at + 1);
-            }
+			}
             source_row = source_row.replace(/\t/g, tab);
             at = source_row.search(cx);
             if (at >= 0) {
@@ -6441,3 +6441,38 @@ klass:              do {
 
     return itself;
 }());
+
+(function(args){
+    /**
+     * Execute jslint.
+     *
+     * @param {string} filepath Target JavaScript file path to lint.
+     * @param {boolean} enableFilePathPrinting Whether to print a target file path.
+     */
+    function executeJsLint (filepath, enableFilePathPrinting) {
+        var result = JSLINT(readFile(filepath));
+        if (enableFilePathPrinting && JSLINT.errors.length >= 1) {
+            print("jslint::" + filepath);
+        }
+        JSLINT.errors.forEach(function(e) {
+            print(e.line + ", " + e.character + ", " + e.reason + ", " + e.evidence);
+        });
+    };
+
+    var i, len;
+    if (args.length === 0) {
+        print("Specify a JavaScript file to lint.");
+    } else if (args[0] === "-file"){
+        // JavaScript files are specified by a file.
+        var files = readFile(args[1]).split("\r\n")
+        for (i = 0, len = files.length; i < len; i++) {
+            executeJsLint(files[i], true);
+        }
+    } else {
+        // JavaScript files are specified by arguments.
+        var i, len;
+        for (i = 0, len = args.length; i < len; i++) {
+            executeJsLint(args[i], false);
+        }
+    }
+}(arguments));
