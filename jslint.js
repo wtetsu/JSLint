@@ -1199,7 +1199,7 @@ var JSLINT = (function () {
             at = source_row.search(/ \t/);
             if (at >= 0) {
                 warn_at('mixed', line, at + 1);
-			}
+            }
             source_row = source_row.replace(/\t/g, tab);
             at = source_row.search(cx);
             if (at >= 0) {
